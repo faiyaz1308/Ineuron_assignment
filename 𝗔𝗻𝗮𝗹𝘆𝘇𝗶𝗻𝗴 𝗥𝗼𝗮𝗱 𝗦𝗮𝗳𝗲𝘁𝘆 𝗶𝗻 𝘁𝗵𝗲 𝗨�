@@ -1,0 +1,107 @@
+CREATE TABLE accident(
+	accident_index VARCHAR(13),
+    accident_severity INT
+);
+
+CREATE TABLE vehicles(
+	accident_index VARCHAR(13),
+    vehicle_type VARCHAR(50)
+);
+
+CREATE TABLE vehicle_types(
+	vehicle_code INT,
+    vehicle_type VARCHAR(60)
+);
+
+load data infile
+'c:/Vehicle_type.csv'
+into table vehicle_types 
+fields terminated by ','
+enclosed by '"'
+lines terminated by '\n'
+ignore 1 rows 
+
+CREATE INDEX accident_index
+ON accident(accident_index);
+
+CREATE INDEX accident_index
+ON vehicles(accident_index);
+
+select * from accident
+select * from vehicles
+select * from vehicle_types
+
+
+/* get Accident Severity and Total Accidents per Vehicle Type */
+SELECT vt.vehicle_type AS 'Vehicle Type', a.accident_severity AS 'Severity', COUNT(vt.vehicle_type) AS 'Number of Accidents'
+FROM accident a
+JOIN vehicles v ON a.accident_index = v.accident_index
+JOIN vehicle_types vt ON v.vehicle_type = vt.vehicle_code
+GROUP BY 1
+ORDER BY 2,3;
+
+/* Average Severity by vehicle type */
+SELECT vt.vehicle_type AS 'Vehicle Type', AVG(a.accident_severity) AS 'Average Severity', COUNT(vt.vehicle_type) AS 'Number of Accidents'
+FROM accident a
+JOIN vehicles v ON a.accident_index = v.accident_index
+JOIN vehicle_types vt ON v.vehicle_type = vt.vehicle_code
+GROUP BY 1
+ORDER BY 2,3;
+
+
+/* Average Severity and Total Accidents by Motorcyle */
+SELECT vt.vehicle_type AS 'Vehicle Type', AVG(a.accident_severity) AS 'Average Severity', COUNT(vt.vehicle_type) AS 'Number of Accidents'
+FROM accident a
+JOIN vehicles v ON a.accident_index = v.accident_index
+JOIN vehicle_types vt ON v.vehicle_type = vt.vehicle_code
+WHERE vt.vehicle_type LIKE '%otorcycle%'
+GROUP BY 1
+ORDER BY 2,3;
+
+
+
+�𝗔𝗻𝗮𝗹𝘆𝘇𝗶𝗻𝗴 𝘁𝗵𝗲 𝗪𝗼𝗿𝗹𝗱 𝗣𝗼𝗽𝘂𝗹𝗮𝘁𝗶𝗼�
+
+
+create table World_Population 
+(country varchar (60),
+ area integer,
+ birth_rate decimal (38, 3),
+ death_rate decimal (38, 3),
+ infant_mortality_rate decimal (38, 3),
+ internet_users integer,
+ life_exp_at_birth decimal (38, 3),
+ maternal_mortality_rate integer,
+ net_migration_rate decimal (38, 3),
+ population integer,
+ population_growth_rate decimal (38, 3))
+ 
+LOAD DATA INFILE  
+'C:/cia_factbook___FSDAA.csv'
+into table World_Population
+FIELDS TERMINATED by ','
+ENCLOSED by '"'
+lines terminated by '\n'
+IGNORE 1 ROWS;
+
+SELECT * FROM World_Population
+
+ /* Which country has the highest population? */
+select country from World_Population where population = (select max(population) FROM World_Population)
+
+/* Which country has the least number of people?*/
+SELECT COUNTRY, MIN(POPULATION) FROM World_Population
+
+/* Which country is witnessing the highest population growth? */
+select COUNTRY, max(population_growth_rate) from world_population
+
+/* Which country has an extraordinary number for the population? */
+select country from World_Population where population = (select max(population) FROM World_Population)
+
+/* Which is the most densely populated country in the world? */
+alter table world_population
+add column population_density decimal (38, 3)
+update world_population
+set population_density = population / area
+select country from World_Population where 
+population_density = (select max(population_density) FROM World_Population)
