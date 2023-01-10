@@ -1,0 +1,83 @@
+Create the following table structure in SNOWFLAKE by creating your own warehouse. Insert some 10 rows using INSERT command (check task 3 and same way insert for all task tables) in the table by trying different values for all the columns and then check using SELECT *
+
+Once data is loaded, performed the below task
+Task 1:
+
+create table shopping_history (
+product varchar (60) not null,
+Quantity int not null,
+unit_price int not null);
+
+insert into shopping_history values ('Milk', 2 , 20),
+('Onion', 6, 15),
+('Potato', 5, 12),
+('Rice' , 10, 25),
+('sugar', 4, 40),
+('Milk', 5, 22),
+('Oil', 7, 40),
+('Bread', 8, 15),
+('Rice', 12, 20)
+
+select * from shopping_history
+
+alter table shopping_history
+add column total_price varchar (30) after product
+update shopping_history
+set total_price = (Quantity * Unit_price)
+select product, SUM(total_price) from shopping_history group by product order by product desc;
+
+````Task 2`````````
+
+create table phones (
+`Name` varchar (20),
+phone_number int not null unique);
+
+insert into phones values ('Jack', 1234),
+('Lena', 3333),
+('Mark', 9999),
+('Anna', 7582)
+
+create table Calls (
+Call_id int not null unique,
+caller int not null,
+callee int not null,
+duration int not null)
+
+insert into Calls values (25, 1234, 7582, 8),
+(7, 9999, 7582, 1),
+(18, 9999, 3333, 4),
+(2, 7582, 3333, 3),
+(3, 3333, 1234, 1),
+(21, 3333, 1234, 1)
+
+select P. `name`, (c. duration) + (ca. duration) as 'total_duration' from phones p
+left join calls c on P. phone_number = c. caller
+left join calls ca on P. phone_number = ca. callee
+where (c. duration) + (ca. duration) >= 10
+
+create table phones1 (
+`Name` varchar (20),
+phone_number int not null unique);
+
+insert into phones1 values ('john', 6356),
+('Addision', 4315),
+('Kate', 8003),
+('Ginny', 9831),
+('Frank', 9748)
+
+create table Calls1 (
+Call_id int not null unique,
+caller int not null,
+callee int not null,
+duration int not null)
+
+insert into Calls1 values (65, 8003, 9831, 7),
+(100, 9831, 8003, 3),
+(145, 4315, 9831, 18),
+(95, 9748, 4315, 2)
+
+select P1. `name`, (c1. duration) + (ca1. duration) as 'total_duration' from phones1 p1
+left join calls1 c1 on P1. phone_number = c1. caller
+left join calls1 ca1 on P1. phone_number = ca1. callee 
+where (c1. duration) + (ca1. duration) >= 10
+group by `name`
